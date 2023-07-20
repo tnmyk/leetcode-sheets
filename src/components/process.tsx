@@ -11,7 +11,7 @@ interface ListResult {
     view_count: number
 }
 const Process = () => {
-    const [result, setResult] = useState<ListResult>(null);
+    const [result, setResult] = useState<ListResult | null>(null);
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         // @ts-ignore
