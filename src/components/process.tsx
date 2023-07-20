@@ -1,10 +1,17 @@
 "use client";
-import { FormEventHandler } from "react";
+import { FormEventHandler, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 
+interface ListResult {
+    creator: string,
+    name: string,
+    questions: any[],
+    view_count: number
+}
 const Process = () => {
+    const [result, setResult] = useState<ListResult>(null);
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         // @ts-ignore
@@ -15,7 +22,9 @@ const Process = () => {
         }
         const id = match[1];
         const res = await fetch(`/api/list?id=${id}`)
-        console.log(res)
+        const resData = await res.json()
+        console.log(resData)
+        setResult(resData.data)
     };
 
     return (
@@ -26,11 +35,9 @@ const Process = () => {
             </form>
             <Card className="p-4 w-10/12 mt-8 mx-auto">
                 <CardContent className="pb-0 flex justify-between">
-                    <div><strong>Creator:</strong> username</div>
-                    <div><strong>Number of problem:</strong> 777</div>
-                    <div><strong>Easy:</strong> 777</div>
-                    <div><strong>Medium:</strong> 777</div>
-                    <div><strong>Hard:</strong> 777</div>
+                    <div><strong>Creator:</strong> {result?.creator ?? "-"}</div>
+                    <div><strong>Number of problem:</strong> {result?.questions?.length ?? "-"}</div>
+                    <div><strong>View count:</strong> {result?.view_count ?? "-"}</div>
                 </CardContent>
             </Card>
         </div>
