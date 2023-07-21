@@ -17,6 +17,9 @@ const Process = () => {
         rows.forEach((row, index) => {
             worksheet[`B${index + 2}`].l = { Target: row.url, Tooltip: "Open problem" }
         })
+        const max_width = filtered.reduce((w, r) => Math.max(w, r.title.length), 10);
+        worksheet["!cols"] = [{wch: 10}, { wch: max_width }];
+        console.log(worksheet["!cols"]);
         writeFile(workbook, "Test.xlsx", { compression: true })
     }
 
