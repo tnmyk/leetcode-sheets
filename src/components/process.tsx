@@ -49,7 +49,7 @@ const Process = () => {
             setResult(data);
             toast({ title: "Success", description: "Fetched the data from Leetcode." })
         } catch (e: any) {
-            toast({ variant:"destructive",title: "Failed", description: e.message })
+            toast({ variant: "destructive", title: "Failed", description: e.message })
         }
         setLoading(false);
     };
@@ -67,13 +67,13 @@ const Process = () => {
                 <Input
                     name="lcURL"
                     placeholder="Public Leetcode list URL"
-                    className="text-lg w-1/2 px-3 py-5"
+                    className="text-lg w-full sm:w-1/2 px-3 py-5"
                 />
                 <Button className="w-fit mt-3">Get Spreadsheet</Button>
             </form>
             {(loading || result) && (
-                <Card ref={infoCardRef} className="py-4 w-9/12 mt-10 mx-auto scroll-m-20">
-                    <CardContent className="pb-0 flex justify-between">
+                <Card ref={infoCardRef} className="py-4 w-11/12 sm:w-9/12 mt-10 mx-auto scroll-m-20">
+                    <CardContent className="pb-0 flex flex-col md:flex-row gap-y-2 justify-between">
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>Creator:</strong>{" "}
                             {result?.creator ?? (
@@ -97,10 +97,10 @@ const Process = () => {
             )}
 
             {
-                (loading || result) && <Card className="mt-10 mx-auto w-4/12 py-3">
+                (loading || result) && <Card className="mt-10 mx-auto w-11/12 sm:w-4/12 py-3">
                     <CardHeader className="flex flex-col items-center">
                         <CardTitle>Download Spreadsheet</CardTitle>
-                        <CardDescription>Edit the sheet for custom changes</CardDescription>
+                        <CardDescription className="text-center">Edit the sheet for custom changes</CardDescription>
                     </CardHeader>
                     <CardContent className="mt-3">
                         <div className="relative w-20 h-20 mx-auto">

@@ -22,7 +22,7 @@ export default function RootLayout({
             <body className={`${inter.className} px-4`}>
                 <Nav />
                 {children}
-                <Toaster/>
+                <Toaster />
                 <Footer />
             </body>
         </html>
