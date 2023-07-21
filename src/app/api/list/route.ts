@@ -28,16 +28,17 @@ export async function GET(request: Request) {
         );
 
         const data: RawListResponse = await res.json();
+        if (!data.name || !data.creator || !data.questions) {
+            return NextResponse.json({
+                message: "List not found. Make sure the list is public.",
+                success: false,
+            }, { status: 404 });
+        }
+
         const responseData: ListResponse = { ...data };
         responseData.questions = data.questions.map((q, index) => {
             return { no: index + 1, title: q.title, url: `https://leetcode.com/problems/${q.title_slug}` }
         })
-        if (!responseData.name || !responseData.creator || !responseData.questions) {
-            return NextResponse.json({
-                message: "List not found.",
-                success: false,
-            });
-        }
 
         return NextResponse.json({ data: responseData, success: true });
     } catch (err) {

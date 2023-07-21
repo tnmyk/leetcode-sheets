@@ -9,19 +9,26 @@ import { Skeleton } from "./ui/skeleton";
 import { DownloadIcon } from '@radix-ui/react-icons'
 import Image from "next/image";
 import { scrollToView } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast"
 
 const Process = () => {
     const [result, setResult] = useState<ListResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const infoCardRef = useRef(null)
+    const { toast } = useToast();
+
     useEffect(() => {
         if (loading) {
             scrollToView(infoCardRef)
         }
     }, [loading])
+
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         setLoading(true);
+        toast({
+            title: "Fetching List..."
+        })
         scrollToView(infoCardRef)
 
         try {
@@ -29,7 +36,7 @@ const Process = () => {
             const url: string = e.target.lcURL.value;
             const match = url.match(/\/list\/(.+?)(?:\/|$)/);
             if (!url || !match || !match[1]) {
-                throw new Error("Please enter valid list URL");
+                throw new Error("Please enter valid list URL.");
             }
             const id = match[1];
             const res = await fetch(`/api/list?id=${id}`);
@@ -40,8 +47,9 @@ const Process = () => {
             const data: ListResponse | null = jsonData.data;
             if (!data) return;
             setResult(data);
+            toast({ title: "Success", description: "Fetched the data from Leetcode." })
         } catch (e: any) {
-            console.log(e.message);
+            toast({ variant:"destructive",title: "Failed", description: e.message })
         }
         setLoading(false);
     };

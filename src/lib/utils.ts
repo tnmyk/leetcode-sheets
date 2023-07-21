@@ -7,6 +7,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const scrollToView = <T extends HTMLElement>(ref: RefObject<T>) => {
-    console.log(ref.current)
     ref.current?.scrollIntoView({ behavior: "smooth" })
 }
