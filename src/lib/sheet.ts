@@ -1,4 +1,4 @@
-import { ListResponse} from "@/types";
+import { ListResponse } from "@/types";
 import { utils as xlsx, writeFile } from 'xlsx';
 
 export const generateSheet = (data: ListResponse) => {

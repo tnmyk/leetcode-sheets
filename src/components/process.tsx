@@ -1,5 +1,5 @@
 "use client";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
@@ -8,14 +8,22 @@ import { generateSheet } from "@/lib/sheet";
 import { Skeleton } from "./ui/skeleton";
 import { DownloadIcon } from '@radix-ui/react-icons'
 import Image from "next/image";
+import { scrollToView } from "@/lib/utils";
 
 const Process = () => {
     const [result, setResult] = useState<ListResponse | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-
+    const [loading, setLoading] = useState<boolean>(false);
+    const infoCardRef = useRef(null)
+    useEffect(() => {
+        if (loading) {
+            scrollToView(infoCardRef)
+        }
+    }, [loading])
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         setLoading(true);
+        scrollToView(infoCardRef)
+
         try {
             // @ts-ignore
             const url: string = e.target.lcURL.value;
@@ -32,7 +40,7 @@ const Process = () => {
             const data: ListResponse | null = jsonData.data;
             if (!data) return;
             setResult(data);
-        } catch (e: unknown) {
+        } catch (e: any) {
             console.log(e.message);
         }
         setLoading(false);
@@ -56,7 +64,7 @@ const Process = () => {
                 <Button className="w-fit mt-3">Get Spreadsheet</Button>
             </form>
             {(loading || result) && (
-                <Card className="py-4 w-9/12 mt-10 mx-auto">
+                <Card ref={infoCardRef} className="py-4 w-9/12 mt-10 mx-auto scroll-m-20">
                     <CardContent className="pb-0 flex justify-between">
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>Creator:</strong>{" "}
@@ -92,7 +100,6 @@ const Process = () => {
                                 <Skeleton className="w-full h-full rounded" />}
                         </div>
                         <h3 className="text-center text-sm font-semibold mt-3">{result ? result.name : <Skeleton className="inline-flex align-bottom w-20 h-5 rounded" />}.xlxs</h3>
-
                     </CardContent>
                     <CardFooter>
                         <Button className="mx-auto" onClick={handleDownload} disabled={!result}>Download <DownloadIcon className="ml-2" /> </Button>
