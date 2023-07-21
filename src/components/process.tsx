@@ -3,15 +3,23 @@ import { FormEventHandler, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-
-interface ListResult {
-    creator: string,
-    name: string,
-    questions: any[],
-    view_count: number
-}
+import { ListResponse, Question } from "@/types";
+import { utils as xlsx, writeFile } from 'xlsx';
 const Process = () => {
-    const [result, setResult] = useState<ListResult | null>(null);
+    const [result, setResult] = useState<ListResponse | null>(null);
+
+    const generateSheet = (rows: Question[]) => {
+        const filtered = rows.map(r => { return { no: r.no, title: r.title } });
+        const worksheet = xlsx.json_to_sheet(filtered);
+        const workbook = xlsx.book_new();
+        xlsx.book_append_sheet(workbook, worksheet, "Sheet 1");
+        xlsx.sheet_add_aoa(worksheet, [["No.", "Problem"]], { origin: "A1" })
+        rows.forEach((row, index) => {
+            worksheet[`B${index + 2}`].l = { Target: row.url, Tooltip: "Open problem" }
+        })
+        writeFile(workbook, "Test.xlsx", { compression: true })
+    }
+
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         // @ts-ignore
@@ -22,16 +30,18 @@ const Process = () => {
         }
         const id = match[1];
         const res = await fetch(`/api/list?id=${id}`)
-        const resData = await res.json()
-        console.log(resData)
-        setResult(resData.data)
+        const jsonData = await res.json();
+        const data: ListResponse | null = jsonData.data;
+        if (!data) return;
+        generateSheet(data.questions);
+        setResult(data)
     };
 
     return (
         <div className="w-full">
             <form onSubmit={handleSubmit} className="flex flex-col items-center mt-10">
-                <Input name="lcURL" placeholder="Public Leetcode list URL" className="text-lg w-1/2" />
-                <Button className="w-fit mt-3">Submit</Button>
+                <Input name="lcURL" placeholder="Public Leetcode list URL" className="text-lg w-1/2 px-3 py-5" />
+                <Button className="w-fit mt-3">Get Spreadsheet</Button>
             </form>
             <Card className="p-4 w-10/12 mt-8 mx-auto">
                 <CardContent className="pb-0 flex justify-between">

@@ -1,3 +1,4 @@
+import { ListResponse, RawListResponse } from "@/types";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -26,17 +27,19 @@ export async function GET(request: Request) {
             }
         );
 
-        const data = await res.json();
-
-        if (!data.name || !data.creator || !data.questions) {
+        const data: RawListResponse = await res.json();
+        const responseData: ListResponse = { ...data };
+        responseData.questions = data.questions.map((q, index) => {
+            return { no: index + 1, title: q.title, url: `https://leetcode.com/problems/${q.title_slug}` }
+        })
+        if (!responseData.name || !responseData.creator || !responseData.questions) {
             return NextResponse.json({
                 message: "List not found.",
                 success: false,
             });
         }
 
-        console.log(data);
-        return NextResponse.json({ data, success: true });
+        return NextResponse.json({ data: responseData, success: true });
     } catch (err) {
         console.log(err)
         return NextResponse.json({ message: "Error occurred", success: false });
