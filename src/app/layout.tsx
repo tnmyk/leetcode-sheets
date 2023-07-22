@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import Footer from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/toaster";
 import SvgBackground from "@/components/layout/background";
-import Script from "next/script";
+import GoogleAnalytics from "@/components/ganalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,18 +30,7 @@ export default function RootLayout({
                 <Toaster />
                 <Footer />
             </body>
-            <Script
-                async
-                src="https://www.googletagmanager.com/gtag/js?id=G-XF2N43JGWR"
-            ></Script>
-            <Script id="google-analytics">
-                {`window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', 'G-XF2N43JGWR');
-                `}
-            </Script>
+            <GoogleAnalytics />
         </html>
     );
 }
