@@ -22,8 +22,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <GoogleAnalytics />
+                <meta name="google-site-verification" content="5Sy0Ek5fJZ3vhUMWMXogWUd5NKNdPTqmcUdGz4JUVaw" />
             </head>
+            <GoogleAnalytics />
             <body className={`relative ${inter.className}`}>
                 <Nav />
                 <main className="relative px-4 min-h-[90vh] pb-16">
