@@ -25,9 +25,9 @@ export default function RootLayout({
                 <meta name="google-site-verification" content="5Sy0Ek5fJZ3vhUMWMXogWUd5NKNdPTqmcUdGz4JUVaw" />
             </head>
             <GoogleAnalytics />
-            <body className={`relative ${inter.className}`}>
+            <body className={`relative ${inter.className} h-screen`}>
                 <Nav />
-                <main className="relative px-4 min-h-[90vh] pb-16">
+                <main className="relative px-4 min-h-[calc(100vh-theme(space.28))] pb-16">
                     {children}
                     <SvgBackground />
                 </main>

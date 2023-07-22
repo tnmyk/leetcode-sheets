@@ -88,7 +88,7 @@ const Process = () => {
                 <Input
                     name="listURL"
                     placeholder="Public Leetcode list URL"
-                    className="text-lg w-full sm:w-1/2 px-3 py-5"
+                    className="text-md w-full sm:w-1/2 px-3 py-5"
                     value={listURL}
                     onChange={(e) => {
                         setListURL(e.target.value)
