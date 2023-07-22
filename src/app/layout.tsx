@@ -21,6 +21,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
+            <GoogleAnalytics />
             <body className={`relative ${inter.className}`}>
                 <Nav />
                 <main className="relative px-4 min-h-[90vh] pb-16">
@@ -30,7 +31,6 @@ export default function RootLayout({
                 <Toaster />
                 <Footer />
             </body>
-            <GoogleAnalytics />
         </html>
     );
 }
