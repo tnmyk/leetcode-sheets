@@ -10,7 +10,7 @@ import GoogleAnalytics from "@/components/ganalytics";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Leetcode Lists",
+    title: "Leetcode Sheets",
     description: "Generate spreadsheets from public leetcode lists.",
 };
 

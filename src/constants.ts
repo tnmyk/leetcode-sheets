@@ -1,4 +1,4 @@
-export const githubURL = "https://github.com/tnmyk/leetcode-lists";
+export const githubURL = "https://github.com/tnmyk/leetcode-sheets";
 
 export const personalWebsite = "https://tanmay.sh"
 
