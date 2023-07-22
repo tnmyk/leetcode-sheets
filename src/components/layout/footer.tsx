@@ -2,7 +2,7 @@ import { githubURL, personalWebsite } from "@/constants";
 
 const Footer = () => {
     return (
-        <footer className="flex justify-between pt-4 px-1 sm:px-4 pb-5  w-11/12 sm:w-4/5 mx-auto border-t mt-24">
+        <footer className="flex justify-between pt-4 px-3 sm:px-7 pb-4  w-full border-t">
             <div>
                 Built by{" "}
                 <a

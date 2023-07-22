@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/toaster"
+import SvgBackground from "@/components/layout/background";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,12 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={`${inter.className} px-4`}>
+            <body className={`relative ${inter.className}`}>
                 <Nav />
-                {children}
+                <main className="relative px-4 min-h-[90vh] pb-16">
+                    {children}
+                    <SvgBackground />
+                </main>
                 <Toaster />
                 <Footer />
             </body>

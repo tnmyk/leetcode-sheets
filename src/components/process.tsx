@@ -69,7 +69,7 @@ const Process = () => {
                     placeholder="Public Leetcode list URL"
                     className="text-lg w-full sm:w-1/2 px-3 py-5"
                 />
-                <Button className="w-fit mt-3">Get Spreadsheet</Button>
+                <Button className="w-fit mt-3" disabled={loading}>Get Spreadsheet</Button>
             </form>
             {(loading || result) && (
                 <Card ref={infoCardRef} className="py-4 w-11/12 sm:w-9/12 mt-10 mx-auto scroll-m-20">
