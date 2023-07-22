@@ -69,7 +69,7 @@ const Process = () => {
         }
         setLoading(false);
         return false;
-    }, [listURL]);
+    }, [listURL, toast]);
 
     const handleDownload = useCallback(() => {
         generateSheet(result!);

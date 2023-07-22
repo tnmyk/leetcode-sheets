@@ -34,7 +34,7 @@ export default function RootLayout({
                 async
                 src="https://www.googletagmanager.com/gtag/js?id=G-XF2N43JGWR"
             ></Script>
-            <Script>
+            <Script id="google-analytics">
                 {`window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
