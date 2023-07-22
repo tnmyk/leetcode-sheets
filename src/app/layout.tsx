@@ -6,7 +6,6 @@ import Footer from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/toaster";
 import SvgBackground from "@/components/layout/background";
 import GoogleAnalytics from "@/components/ganalytics";
-import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +21,9 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <Head>
+            <head>
                 <GoogleAnalytics />
-            </Head>
+            </head>
             <body className={`relative ${inter.className}`}>
                 <Nav />
                 <main className="relative px-4 min-h-[90vh] pb-16">
