@@ -6,6 +6,7 @@ const GoogleAnalytics = () => {
         <>
             <Script
                 async
+                strategy="beforeInteractive"
                 src={`https://www.googletagmanager.com/gtag/js?id=G-${process.env.NEXT_PUBLIC_GTAG_ID}`}
             ></Script>
             <Script id="google-analytics">
