@@ -6,7 +6,7 @@ export const generateSheet = (data: ListResponse) => {
     const worksheet = xlsx.json_to_sheet(filtered);
     const workbook = xlsx.book_new();
     xlsx.book_append_sheet(workbook, worksheet, "Sheet 1");
-    xlsx.sheet_add_aoa(worksheet, [["No.", "Problem"]], { origin: "A1" })
+    xlsx.sheet_add_aoa(worksheet, [["No.", "Problems"]], { origin: "A1" })
     data.questions.forEach((row, index) => {
         worksheet[`B${index + 2}`].l = { Target: row.url, Tooltip: "Open problem" }
     })
