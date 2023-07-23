@@ -14,7 +14,7 @@ const Footer = () => {
                 </a>
             </div>
             <a href={githubURL} target="_blank" className="font-medium">
-                <>Contribute on Github</>
+                Contribute on <strong>Github</strong>
             </a>
         </footer>
     );

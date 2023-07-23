@@ -35,6 +35,7 @@ const Process = () => {
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(async (e) => {
         e.preventDefault();
+        setResult(null)
         setLoading(true);
         toast({
             title: "Fetching",
@@ -104,24 +105,24 @@ const Process = () => {
             {(loading || result) && (
                 <Card
                     ref={infoCardRef}
-                    className="py-4 w-11/12 sm:w-9/12 2xl:w-7/12 mt-10 mx-auto scroll-m-20"
+                    className="py-4 w-11/12 sm:w-9/12 2xl:w-7/12 mt-10 mx-auto scroll-m-20 animate-fade-in"
                 >
                     <CardContent className="pb-0 flex flex-col md:flex-row gap-y-2 justify-between">
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>Creator:</strong>{" "}
-                            {result?.creator ?? (
+                            {result ? <span className="animate-fade-in">{result.creator}</span> : (
                                 <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />
                             )}
                         </div>
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>Number of problem:</strong>{" "}
-                            {result?.questions?.length ?? (
+                            {result ? <span className="animate-fade-in">{result.questions.length || 0}</span> : (
                                 <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />
                             )}
                         </div>
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>View count:</strong>{" "}
-                            {result?.view_count ?? (
+                            {result ? <span className="animate-fade-in">{result.view_count}</span> : (
                                 <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />
                             )}
                         </div>
@@ -130,7 +131,7 @@ const Process = () => {
             )}
 
             {(loading || result) && (
-                <Card className="mt-10 mx-auto w-11/12 sm:w-96 py-3">
+                <Card className="mt-10 mx-auto w-11/12 sm:w-96 py-3 animate-fade-in">
                     <CardHeader className="flex flex-col items-center">
                         <CardTitle>Download Spreadsheet</CardTitle>
                         <CardDescription className="text-center">
@@ -144,6 +145,7 @@ const Process = () => {
                                     src="/sheet.png"
                                     alt="sheet icon"
                                     fill={true}
+                                    className="animate-fade-in"
                                 />
                             ) : (
                                 <Skeleton className="w-full h-full rounded" />

@@ -27,7 +27,7 @@ export default function RootLayout({
             <GoogleAnalytics measurementID={process.env.NEXT_PUBLIC_MEASUREMENT_ID} />
             <body className={`relative ${inter.className} h-screen`}>
                 <Nav />
-                <main className="relative px-4 min-h-[calc(100vh-theme(space.28))] pb-16">
+                <main className="relative px-4 min-h-[calc(100vh-theme(space.28))] pb-16 animate-fade-in">
                     {children}
                     <SvgBackground />
                 </main>
