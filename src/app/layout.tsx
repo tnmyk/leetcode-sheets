@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import Footer from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/toaster";
 import SvgBackground from "@/components/layout/background";
-import GoogleAnalytics from "@/components/ganalytics";
+import GoogleAnalytics from "@/components/googleanalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +22,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <meta name="google-site-verification" content="5Sy0Ek5fJZ3vhUMWMXogWUd5NKNdPTqmcUdGz4JUVaw" />
+                <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION} />
             </head>
-            <GoogleAnalytics />
+            <GoogleAnalytics measurementID={process.env.NEXT_PUBLIC_MEASUREMENT_ID} />
             <body className={`relative ${inter.className} h-screen`}>
                 <Nav />
                 <main className="relative px-4 min-h-[calc(100vh-theme(space.28))] pb-16">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GitHubLogoIcon, TableIcon } from "@radix-ui/react-icons";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { githubURL } from "@/constants";
 const Nav = () => {
     return (

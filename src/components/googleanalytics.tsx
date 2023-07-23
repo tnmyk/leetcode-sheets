@@ -1,19 +1,23 @@
 "use client";
 import Script from "next/script";
 
-const GoogleAnalytics = () => {
+interface IGAnalytics {
+    measurementID?: string;
+}
+const GoogleAnalytics = ({ measurementID }: IGAnalytics) => {
+    if (!measurementID) return <></>
     return (
         <>
             <Script
                 async
-                src={`https://www.googletagmanager.com/gtag/js?id=G-${process.env.NEXT_PUBLIC_GTAG_ID}`}
+                src={`https://www.googletagmanager.com/gtag/js?id=${measurementID}`}
             ></Script>
             <Script id="google-analytics">
                 {`window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
 
-                gtag('config', 'G-${process.env.NEXT_PUBLIC_GTAG_ID}');
+                gtag('config', '${measurementID}');
                 `}
             </Script>
         </>
