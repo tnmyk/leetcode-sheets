@@ -98,7 +98,7 @@ const Process = () => {
                     <Button type="submit" className="w-fit" disabled={loading}>
                         Get Spreadsheet
                     </Button>
-                    <button className="text-sm underline text-gray-500" onClick={handleUseExample} disabled={loading}>Use example</button>
+                    <button className="text-sm underline text-zinc-500" onClick={handleUseExample} disabled={loading}>Use example</button>
                 </div>
             </form>
             {(loading || result) && (

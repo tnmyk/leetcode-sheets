@@ -2,7 +2,7 @@ import { githubURL, personalWebsite } from "@/constants";
 
 const Footer = () => {
     return (
-        <footer className="flex justify-between pt-4 px-3 sm:px-7 pb-4  w-full border-t">
+        <footer className="h-14 flex text-sm text-gray-700 items-center justify-between px-3 sm:px-7 w-full border-t">
             <div>
                 Built by{" "}
                 <a
@@ -14,7 +14,7 @@ const Footer = () => {
                 </a>
             </div>
             <a href={githubURL} target="_blank" className="font-medium">
-                <u>Source</u>
+                <>Contribute on Github</>
             </a>
         </footer>
     );
