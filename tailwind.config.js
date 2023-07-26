@@ -69,11 +69,11 @@ module.exports = {
                 },
                 "fade-in": {
                     from: {
-                        transform: "translateY(10px)",
+                        transform: "translateY(12px)",
                         opacity: "0"
                     },
                     to: {
-                        transform: "translateT(0px)",
+                        transform: "translateY(0px)",
                         opacity: "1"
                     }
                 }
@@ -81,7 +81,7 @@ module.exports = {
             animation: {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
-                "fade-in": "fade-in 0.5s"
+                "fade-in": "fade-in 0.6s"
             },
         },
     },
