@@ -1,6 +1,6 @@
-export interface ListResponse<QuestionType> {
+export interface ListResponse {
     listMetadata: ListMetadata;
-    questions: QuestionType[];
+    questions: Question[];
 }
 
 export interface QuestionsList<QuestionType> {

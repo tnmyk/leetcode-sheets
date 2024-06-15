@@ -54,15 +54,15 @@ const fetchListMetadata = async (listId: string): Promise<ListMetadata> => {
     });
 
     const metadataRoot: MetaDataResponseRoot = await metadataResponse.json();
-    
+
     const metadata = metadataRoot.data.favoriteDetailV2;
-    
-    const filteredMetadata: ListMetadata= {
-       name: metadata.name,
-       questionNumber: metadata.questionNumber,
-       creator: metadata.creator,
-       description: metadata.description
-    }
+
+    const filteredMetadata: ListMetadata = {
+        name: metadata.name,
+        questionNumber: metadata.questionNumber,
+        creator: metadata.creator,
+        description: metadata.description,
+    };
 
     return filteredMetadata;
 };
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
             fetchListMetadata(id),
         ]);
 
-        const data: ListResponse<Question> = { listMetadata, questions };
+        const data: ListResponse = { listMetadata, questions };
         return NextResponse.json({ data, success: true });
     } catch (err) {
         console.log(err);
