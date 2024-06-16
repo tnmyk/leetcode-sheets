@@ -24,12 +24,12 @@ const fetchQuestionList = async (listId: string): Promise<Question[]> => {
     const rawQuestions: QuestionsList<RawQuestion> =
         await questionsListResponse.json();
 
-    if (!rawQuestions.data.favoriteQuestionList) {
+    if (!rawQuestions?.data?.favoriteQuestionList) {
         return new Promise(() => null);
     }
 
     const processedQuestions: Question[] =
-        rawQuestions.data.favoriteQuestionList.questions.map(
+        rawQuestions?.data?.favoriteQuestionList?.questions?.map(
             (question: RawQuestion, index: number) => {
                 return {
                     index,
@@ -55,7 +55,11 @@ const fetchListMetadata = async (listId: string): Promise<ListMetadata> => {
 
     const metadataRoot: MetaDataResponseRoot = await metadataResponse.json();
 
-    const metadata = metadataRoot.data.favoriteDetailV2;
+    const metadata = metadataRoot?.data?.favoriteDetailV2;
+
+    if (!metadata) {
+        return new Promise(() => null);
+    }
 
     const filteredMetadata: ListMetadata = {
         name: metadata.name,
@@ -73,18 +77,21 @@ export async function GET(request: Request) {
         const id = searchParams.get("id");
 
         if (id == null || id.trim().length == 0) {
-            return;
+            return NextResponse.json({ message: "Invalid List ID", success: false });
         }
 
         const [questions, listMetadata] = await Promise.all([
             fetchQuestionList(id),
             fetchListMetadata(id),
         ]);
-
+        
+        if(!questions || !listMetadata){
+            throw new Error();
+        }
         const data: ListResponse = { listMetadata, questions };
         return NextResponse.json({ data, success: true });
     } catch (err) {
         console.log(err);
-        return NextResponse.json({ message: "Error occurred", success: false });
+        return NextResponse.json({ message: "Something went wrong while fetching the list", success: false });
     }
 }

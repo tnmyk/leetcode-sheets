@@ -22,8 +22,9 @@ const addMetadata = (
     data: ListResponse,
     frontendQuestions: FrontendQuestion[]
 ) => {
-    const questionDistribution =
-        getQuestionsDifficultyDistribution(frontendQuestions);
+    const questionDistribution = getQuestionsDifficultyDistribution(
+        frontendQuestions as unknown as Question[]
+    );
 
     xlsx.sheet_add_aoa(
         worksheet,

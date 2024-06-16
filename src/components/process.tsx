@@ -17,7 +17,12 @@ import {
     CardHeader,
     CardTitle,
 } from "./ui/card";
-import { ListResponse, QuestionsDifficultyDistribution } from "@/types";
+import {
+    FrontendQuestion,
+    ListResponse,
+    Question,
+    QuestionsDifficultyDistribution,
+} from "@/types";
 import { generateSheet } from "@/lib/sheet";
 import { Skeleton } from "./ui/skeleton";
 import { DownloadIcon } from "@radix-ui/react-icons";
@@ -86,12 +91,22 @@ const Process = () => {
 
     const difficultyDistribution: QuestionsDifficultyDistribution =
         useMemo(() => {
-            return getQuestionsDifficultyDistribution(result?.questions);
+            return getQuestionsDifficultyDistribution(
+                result?.questions as Question[]
+            );
         }, [result]);
 
     const handleDownload = useCallback(() => {
-        generateSheet(result!);
-    }, [result]);
+        try {
+            generateSheet(result!);
+        } catch (e) {
+            toast({
+                variant: "destructive",
+                title: "Failed",
+                description: "Something went wrong while generating the sheet",
+            });
+        }
+    }, [result, toast]);
 
     const handleUseExample = useCallback(() => {
         setListURL(exampleListURL);

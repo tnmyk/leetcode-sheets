@@ -1,4 +1,8 @@
-import { FrontendQuestion, QuestionsDifficultyDistribution } from "@/types";
+import {
+    FrontendQuestion,
+    Question,
+    QuestionsDifficultyDistribution,
+} from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { RefObject } from "react";
 import { twMerge } from "tailwind-merge";
@@ -12,7 +16,7 @@ export const scrollToView = <T extends HTMLElement>(ref: RefObject<T>) => {
 };
 
 export const getQuestionsDifficultyDistribution = (
-    questions: FrontendQuestion[] | undefined
+    questions: Question[] | undefined
 ): QuestionsDifficultyDistribution => {
     const initial = { easy: 0, hard: 0, medium: 0 };
 
