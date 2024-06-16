@@ -3,6 +3,7 @@ import {
     FormEventHandler,
     useCallback,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react";
@@ -16,12 +17,12 @@ import {
     CardHeader,
     CardTitle,
 } from "./ui/card";
-import { ListResponse } from "@/types";
+import { ListResponse, QuestionsDifficultyDistribution } from "@/types";
 import { generateSheet } from "@/lib/sheet";
 import { Skeleton } from "./ui/skeleton";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { scrollToView } from "@/lib/utils";
+import { getQuestionsDifficultyDistribution, scrollToView } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { exampleListURL } from "@/constants";
 
@@ -83,6 +84,11 @@ const Process = () => {
         [listURL, toast]
     );
 
+    const difficultyDistribution: QuestionsDifficultyDistribution =
+        useMemo(() => {
+            return getQuestionsDifficultyDistribution(result?.questions);
+        }, [result]);
+
     const handleDownload = useCallback(() => {
         generateSheet(result!);
     }, [result]);
@@ -139,7 +145,9 @@ const Process = () => {
                             <strong>Number of problem:</strong>{" "}
                             {result ? (
                                 <span className="animate-fade-in">
-                                    {result.questions.length || 0}
+                                    {result.questions.length
+                                        ? `${result.questions.length} (Easy: ${difficultyDistribution.easy}, Medium: ${difficultyDistribution.medium}, Hard: ${difficultyDistribution.hard})`
+                                        : 0}
                                 </span>
                             ) : (
                                 <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />

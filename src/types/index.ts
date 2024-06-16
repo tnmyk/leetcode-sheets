@@ -27,6 +27,12 @@ export interface Question extends Omit<RawQuestion, "titleSlug"> {
     url: string;
 }
 
+export interface FrontendQuestion
+    extends Omit<Question, "url" | "topicTags" | "index"> {
+    topicTags: string;
+    index: string;
+}
+
 export interface TopicTag {
     name: string;
     slug: string;
@@ -60,4 +66,10 @@ export type ListMetadata = Pick<
 
 export interface Creator {
     realName: string;
+}
+
+export interface QuestionsDifficultyDistribution {
+    easy: number;
+    medium: number;
+    hard: number;
 }

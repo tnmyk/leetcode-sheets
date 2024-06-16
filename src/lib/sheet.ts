@@ -1,40 +1,77 @@
-import { ListResponse } from "@/types";
+import { FrontendQuestion, ListResponse, Question } from "@/types";
 import { utils as xlsx, writeFile } from "xlsx";
 
+const MIN_WIDTH = 12;
+const QUESTIONS_STARTING_POSTITION = 8;
+
+const calculateWidth = (
+    questions: FrontendQuestion[],
+    key: keyof FrontendQuestion
+) => {
+    const width = questions.reduce(
+        (w, r) => Math.max(w, r[key].toString().length),
+        MIN_WIDTH
+    );
+
+    return width;
+};
+
 export const generateSheet = (data: ListResponse) => {
-    const filtered = data.questions.map((r) => {
+    const filtered: FrontendQuestion[] = data.questions.map((r) => {
         return {
-            index: r.index,
+            index: (r.index + 1).toString(),
             difficulty: r.difficulty,
             title: r.title,
-            tags: r.topicTags.map((tag) => tag.name).sort().join(", "),
+            topicTags: r.topicTags
+                .map((tag) => tag.name)
+                .sort()
+                .join(", "),
         };
     });
 
-    const worksheet = xlsx.json_to_sheet(filtered);
     const workbook = xlsx.book_new();
+    const worksheet = xlsx.json_to_sheet([]);
 
-    xlsx.book_append_sheet(workbook, worksheet, "Sheet 1");
     xlsx.sheet_add_aoa(
         worksheet,
         [["Index", "Difficulty", "Problems", "Topic Tags"]],
-        { origin: "A2" }
+        {
+            origin: `B${QUESTIONS_STARTING_POSTITION - 1}`,
+        }
+    );
+    xlsx.sheet_add_json(worksheet, filtered, {
+        origin: `B${QUESTIONS_STARTING_POSTITION}`,
+        skipHeader: true,
+    });
+
+    xlsx.sheet_add_aoa(
+        worksheet,
+        [
+            ["Sheet Name", data.listMetadata.name],
+            ["Creator", data.listMetadata.creator.realName],
+            ["Description", data.listMetadata.description],
+            ["Number of Questions", data.listMetadata.questionNumber.toString()],
+        ],
+        { origin: "D2" }
     );
 
     data.questions.forEach((row, index) => {
-        worksheet[`C${index + 2}`].l = {
+        worksheet[`D${QUESTIONS_STARTING_POSTITION + index}`].l = {
             Target: row.url,
             Tooltip: "Open problem",
         };
     });
 
-    const max_width = filtered.reduce(
-        (w, r) => Math.max(w, r.title.length),
-        20
-    );
+    worksheet["!cols"] = [
+        { wch: MIN_WIDTH },
+        ...Object.keys(filtered[0]).map((key) => {
+            return {
+                wch: calculateWidth(filtered, key as keyof FrontendQuestion),
+            };
+        }),
+    ];
 
-    worksheet["!cols"] = [{ wch: 10 }, { wch: max_width }];
-
+    xlsx.book_append_sheet(workbook, worksheet, "Sheet 1");
     writeFile(workbook, `${data.listMetadata.name}.xlsx`, {
         compression: true,
     });
