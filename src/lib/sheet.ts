@@ -1,5 +1,6 @@
 import { FrontendQuestion, ListResponse, Question } from "@/types";
 import { utils as xlsx, writeFile } from "xlsx";
+import { getQuestionsDifficultyDistribution } from "./utils";
 
 const MIN_WIDTH = 12;
 const QUESTIONS_STARTING_POSTITION = 8;
@@ -44,13 +45,22 @@ export const generateSheet = (data: ListResponse) => {
         skipHeader: true,
     });
 
+    const questionDistribution = getQuestionsDifficultyDistribution(filtered);
+
     xlsx.sheet_add_aoa(
         worksheet,
         [
             ["Sheet Name", data.listMetadata.name],
             ["Creator", data.listMetadata.creator.realName],
             ["Description", data.listMetadata.description],
-            ["Number of Questions", data.listMetadata.questionNumber.toString()],
+            [
+                "Number of Questions",
+                `${data.listMetadata.questionNumber.toString()} (Easy: ${
+                    questionDistribution.easy
+                }, Medium: ${questionDistribution.medium}, Hard: ${
+                    questionDistribution.hard
+                })`,
+            ],
         ],
         { origin: "D2" }
     );
