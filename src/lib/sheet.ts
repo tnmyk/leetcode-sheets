@@ -1,5 +1,5 @@
 import { FrontendQuestion, ListResponse, Question } from "@/types";
-import { utils as xlsx, writeFile } from "xlsx";
+import { utils as xlsx, writeFile, WorkSheet } from "xlsx";
 import { getQuestionsDifficultyDistribution } from "./utils";
 
 const MIN_WIDTH = 12;
@@ -17,35 +17,13 @@ const calculateWidth = (
     return width;
 };
 
-export const generateSheet = (data: ListResponse) => {
-    const filtered: FrontendQuestion[] = data.questions.map((r) => {
-        return {
-            index: (r.index + 1).toString(),
-            difficulty: r.difficulty,
-            title: r.title,
-            topicTags: r.topicTags
-                .map((tag) => tag.name)
-                .sort()
-                .join(", "),
-        };
-    });
-
-    const workbook = xlsx.book_new();
-    const worksheet = xlsx.json_to_sheet([]);
-
-    xlsx.sheet_add_aoa(
-        worksheet,
-        [["Index", "Difficulty", "Problems", "Topic Tags"]],
-        {
-            origin: `B${QUESTIONS_STARTING_POSTITION - 1}`,
-        }
-    );
-    xlsx.sheet_add_json(worksheet, filtered, {
-        origin: `B${QUESTIONS_STARTING_POSTITION}`,
-        skipHeader: true,
-    });
-
-    const questionDistribution = getQuestionsDifficultyDistribution(filtered);
+const addMetadata = (
+    worksheet: WorkSheet,
+    data: ListResponse,
+    frontendQuestions: FrontendQuestion[]
+) => {
+    const questionDistribution =
+        getQuestionsDifficultyDistribution(frontendQuestions);
 
     xlsx.sheet_add_aoa(
         worksheet,
@@ -64,6 +42,24 @@ export const generateSheet = (data: ListResponse) => {
         ],
         { origin: "D2" }
     );
+};
+
+const addQuestions = (
+    worksheet: WorkSheet,
+    data: ListResponse,
+    filtered: FrontendQuestion[]
+) => {
+    xlsx.sheet_add_aoa(
+        worksheet,
+        [["Index", "Difficulty", "Problems", "Topic Tags"]],
+        {
+            origin: `B${QUESTIONS_STARTING_POSTITION - 1}`,
+        }
+    );
+    xlsx.sheet_add_json(worksheet, filtered, {
+        origin: `B${QUESTIONS_STARTING_POSTITION}`,
+        skipHeader: true,
+    });
 
     data.questions.forEach((row, index) => {
         worksheet[`D${QUESTIONS_STARTING_POSTITION + index}`].l = {
@@ -80,6 +76,26 @@ export const generateSheet = (data: ListResponse) => {
             };
         }),
     ];
+};
+
+export const generateSheet = (data: ListResponse) => {
+    const filtered: FrontendQuestion[] = data.questions.map((r) => {
+        return {
+            index: (r.index + 1).toString(),
+            difficulty: r.difficulty,
+            title: r.title,
+            topicTags: r.topicTags
+                .map((tag) => tag.name)
+                .sort()
+                .join(", "),
+        };
+    });
+
+    const workbook = xlsx.book_new();
+    const worksheet = xlsx.json_to_sheet([]);
+
+    addQuestions(worksheet, data, filtered);
+    addMetadata(worksheet, data, filtered);
 
     xlsx.book_append_sheet(workbook, worksheet, "Sheet 1");
     writeFile(workbook, `${data.listMetadata.name}.xlsx`, {
