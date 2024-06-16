@@ -1,5 +1,12 @@
 "use client";
-import { FormEventHandler, useCallback, useEffect, useRef, useState } from "react";
+import {
+    FormEventHandler,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import {
@@ -10,12 +17,17 @@ import {
     CardHeader,
     CardTitle,
 } from "./ui/card";
-import { ListResponse } from "@/types";
+import {
+    FrontendQuestion,
+    ListResponse,
+    Question,
+    QuestionsDifficultyDistribution,
+} from "@/types";
 import { generateSheet } from "@/lib/sheet";
 import { Skeleton } from "./ui/skeleton";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { scrollToView } from "@/lib/utils";
+import { getQuestionsDifficultyDistribution, scrollToView } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { exampleListURL } from "@/constants";
 
@@ -33,52 +45,72 @@ const Process = () => {
         }
     }, [loading]);
 
-    const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(async (e) => {
-        e.preventDefault();
-        setResult(null)
-        setLoading(true);
-        toast({
-            title: "Fetching",
-            description: "Getting the data from Leetcode."
-        });
-        scrollToView(infoCardRef);
-
-        try {
-            const match = listURL.match(/\/list\/(.+?)(?:\/|$)/);
-            if (!listURL || !match || !match[1]) {
-                throw new Error("Please enter valid list URL.");
-            }
-            const id = match[1];
-            const res = await fetch(`/api/list?id=${id}`);
-            const jsonData = await res.json();
-            if (!res.ok) {
-                throw new Error(jsonData.message || "Failed to fetch data.");
-            }
-            const data: ListResponse | null = jsonData.data;
-            if (!data) return;
-            setResult(data);
+    const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
+        async (e) => {
+            e.preventDefault();
+            setResult(null);
+            setLoading(true);
             toast({
-                title: "Success",
-                description: "Fetched the data from Leetcode.",
+                title: "Fetching",
+                description: "Getting the data from Leetcode.",
             });
-        } catch (e: any) {
+            scrollToView(infoCardRef);
+
+            try {
+                const match = listURL.match(/\/list\/(.+?)(?:\/|$)/);
+                if (!listURL || !match || !match[1]) {
+                    throw new Error("Please enter valid list URL.");
+                }
+                const id = match[1];
+                const res = await fetch(`/api/list?id=${id}`);
+                const jsonData = await res.json();
+                if (!res.ok) {
+                    throw new Error(
+                        jsonData.message || "Failed to fetch data."
+                    );
+                }
+                const data: ListResponse | null = jsonData.data;
+                if (!data) return;
+                setResult(data);
+                toast({
+                    title: "Success",
+                    description: "Fetched the data from Leetcode.",
+                });
+            } catch (e: any) {
+                toast({
+                    variant: "destructive",
+                    title: "Failed",
+                    description: e.message,
+                });
+            }
+            setLoading(false);
+            return false;
+        },
+        [listURL, toast]
+    );
+
+    const difficultyDistribution: QuestionsDifficultyDistribution =
+        useMemo(() => {
+            return getQuestionsDifficultyDistribution(
+                result?.questions as Question[]
+            );
+        }, [result]);
+
+    const handleDownload = useCallback(() => {
+        try {
+            generateSheet(result!);
+        } catch (e) {
             toast({
                 variant: "destructive",
                 title: "Failed",
-                description: e.message,
+                description: "Something went wrong while generating the sheet",
             });
         }
-        setLoading(false);
-        return false;
-    }, [listURL, toast]);
-
-    const handleDownload = useCallback(() => {
-        generateSheet(result!);
-    }, [result]);
+    }, [result, toast]);
 
     const handleUseExample = useCallback(() => {
         setListURL(exampleListURL);
-    }, [])
+    }, []);
 
     return (
         <div className="w-full">
@@ -92,14 +124,20 @@ const Process = () => {
                     className="text-md w-full sm:w-1/2 px-3 py-5"
                     value={listURL}
                     onChange={(e) => {
-                        setListURL(e.target.value)
+                        setListURL(e.target.value);
                     }}
                 />
                 <div className="mt-3 flex gap-x-3 items-center">
                     <Button type="submit" className="w-fit" disabled={loading}>
                         Get Spreadsheet
                     </Button>
-                    <button className="text-sm underline text-zinc-500" onClick={handleUseExample} disabled={loading}>Use example</button>
+                    <button
+                        className="text-sm underline text-zinc-500"
+                        onClick={handleUseExample}
+                        disabled={loading}
+                    >
+                        Use example
+                    </button>
                 </div>
             </form>
             {(loading || result) && (
@@ -110,19 +148,23 @@ const Process = () => {
                     <CardContent className="pb-0 flex flex-col md:flex-row gap-y-2 justify-between">
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>Creator:</strong>{" "}
-                            {result ? <span className="animate-fade-in">{result.creator}</span> : (
+                            {result ? (
+                                <span className="animate-fade-in">
+                                    {result.listMetadata.creator.realName}
+                                </span>
+                            ) : (
                                 <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />
                             )}
                         </div>
                         <div className="flex flex-1 justify-center items-center gap-x-2">
                             <strong>Number of problem:</strong>{" "}
-                            {result ? <span className="animate-fade-in">{result.questions.length || 0}</span> : (
-                                <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />
-                            )}
-                        </div>
-                        <div className="flex flex-1 justify-center items-center gap-x-2">
-                            <strong>View count:</strong>{" "}
-                            {result ? <span className="animate-fade-in">{result.view_count}</span> : (
+                            {result ? (
+                                <span className="animate-fade-in">
+                                    {result.questions.length
+                                        ? `${result.questions.length} (Easy: ${difficultyDistribution.easy}, Medium: ${difficultyDistribution.medium}, Hard: ${difficultyDistribution.hard})`
+                                        : 0}
+                                </span>
+                            ) : (
                                 <Skeleton className="inline-flex w-[100px] h-[20px] rounded-full" />
                             )}
                         </div>
@@ -153,11 +195,10 @@ const Process = () => {
                         </div>
                         <h3 className="text-center text-sm font-semibold mt-3">
                             {result ? (
-                                result.name
+                                result.listMetadata.name + ".xlxs"
                             ) : (
                                 <Skeleton className="inline-flex align-bottom w-20 h-5 rounded" />
                             )}
-                            .xlxs
                         </h3>
                     </CardContent>
                     <CardFooter>
